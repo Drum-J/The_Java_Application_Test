@@ -5,15 +5,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -39,6 +38,9 @@ class StudyTest {
 
     int value = 1;
 
+    @RegisterExtension
+    static FindSlowTestExtension findSlowTestExtension = new FindSlowTestExtension(500L);
+
     @Order(2)
     @FastTest
     @DisplayName("스터디 만들기")
@@ -52,17 +54,19 @@ class StudyTest {
         //then
         assertAll(
                 () -> assertNotNull(study),
-                () ->assertEquals(StudyStatus.DRAFT,study.getStatus(),
+                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(),
                         () -> "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다."),
-                () -> assertTrue(study.getLimit() > 0 ,"스터디 최대 참석 가능 인원은 0보다 커야한다.")
+                () -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야한다.")
         );
         System.out.println("create");
     }
 
     @Order(1)
-    @FastTest
+    @Test
     @DisplayName("스터디 정원 TEST")
-    void create_new_study_exception() {
+    void create_new_study_exception() throws InterruptedException {
+        Thread.sleep(510L);
+
         System.out.println(this);
         System.out.println(value++);
         IllegalArgumentException exception =
