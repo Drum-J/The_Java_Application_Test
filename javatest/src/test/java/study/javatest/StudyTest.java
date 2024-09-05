@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
@@ -22,9 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
 
-    @Test
+    @FastTest
     @DisplayName("스터디 만들기")
-    @Tag("fast")
     void create_new_study() throws Exception {
         //given
         Study study = new Study(10);
@@ -40,18 +37,16 @@ class StudyTest {
         System.out.println("create");
     }
 
-    @Test
+    @FastTest
     @DisplayName("스터디 정원 TEST")
-    @Tag("fast")
     void create_new_study_exception() {
         IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> new Study(-10));
         assertEquals("limit은 0보다 커야 한다.", exception.getMessage());
     }
 
-    @Test
+    @SlowTest
     @DisplayName("스터디 생성 시간 TEST")
-    @Tag("slow")
     void timeout() {
         assertTimeout(Duration.ofMillis(100), () -> {
             new Study(10);
