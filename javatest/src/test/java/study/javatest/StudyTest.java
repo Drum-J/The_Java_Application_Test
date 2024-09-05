@@ -9,8 +9,16 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
@@ -66,10 +74,41 @@ class StudyTest {
     }
 
     @ParameterizedTest(name = "{index} {displayName} message={0}")
-    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    @ValueSource(ints = {10, 20, 30, 40})
     @DisplayName("파라미터 TEST")
-    void parameterTest(String message) {
-        System.out.println(message);
+    void parameterTest(@ConvertWith(StudyConverter.class) Study study) {
+        System.out.println(study.getLimit());
+    }
+
+    @DisplayName("스터디 만들기 TEST")
+    @ParameterizedTest(name = "{index} {displayName} limit={0}")
+    @CsvSource({"10, '자바 스터디'", "20, 스프링 스터디"})
+    void parameterTest2(Integer limit, String name) {
+        Study study = new Study(limit, name);
+        System.out.println(study);
+    }
+
+    @DisplayName("스터디 만들기 TEST")
+    @ParameterizedTest(name = "{index} {displayName} limit={0}")
+    @CsvSource({"10, '자바 스터디'", "20, 스프링 스터디"})
+    void parameterTest3(@AggregateWith(StudyAggregator.class) Study study) {
+        System.out.println(study);
+    }
+
+    static class StudyConverter extends SimpleArgumentConverter {
+        @Override
+        protected Object convert(Object o, Class<?> aClass) throws ArgumentConversionException {
+            assertEquals(Study.class, aClass, "Can only convert to Study");
+
+            return new Study(Integer.parseInt(o.toString()));
+        }
+    }
+
+    static class StudyAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
+            return new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
+        }
     }
 
     @BeforeAll
