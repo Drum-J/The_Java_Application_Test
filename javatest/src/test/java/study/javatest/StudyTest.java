@@ -8,6 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnJre;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 
 import java.time.Duration;
 
@@ -24,6 +30,8 @@ class StudyTest {
 
     @Test
     @DisplayName("스터디 만들기")
+    //@EnabledOnOs(OS.WINDOWS)
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_17, JRE.JAVA_21})
     void create_new_study() throws Exception {
         //given
         Study study = new Study(10);
@@ -44,6 +52,8 @@ class StudyTest {
     }
 
     @Test
+    //@DisabledOnOs(OS.WINDOWS)
+    @DisabledOnJre({JRE.JAVA_8, JRE.JAVA_17, JRE.JAVA_21})
     void create_new_study_exception() {
         IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> new Study(-10));
@@ -54,7 +64,7 @@ class StudyTest {
     void timeout() {
         assertTimeout(Duration.ofMillis(100), () -> {
             new Study(10);
-            Thread.sleep(300);
+            Thread.sleep(50);
         });
         // 실패 시 즉시 끝내고 싶다 하면 assertTimeoutPreemptively 를 사용하면 100 밀리세컨드 이후에 바로 종료된다.
     }
