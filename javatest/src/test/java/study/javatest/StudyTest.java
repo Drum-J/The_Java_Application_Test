@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
@@ -31,12 +32,17 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StudyTest {
+
+    int value = 1;
 
     @FastTest
     @DisplayName("스터디 만들기")
     void create_new_study() throws Exception {
         //given
+        System.out.println(this);
+        System.out.println(value++);
         Study study = new Study(10);
         //when
 
@@ -53,6 +59,8 @@ class StudyTest {
     @FastTest
     @DisplayName("스터디 정원 TEST")
     void create_new_study_exception() {
+        System.out.println(this);
+        System.out.println(value++);
         IllegalArgumentException exception =
                 assertThrows(IllegalArgumentException.class, () -> new Study(-10));
         assertEquals("limit은 0보다 커야 한다.", exception.getMessage());
