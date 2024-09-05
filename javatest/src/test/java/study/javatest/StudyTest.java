@@ -4,15 +4,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
 
     @Test
-    void create() throws Exception {
+    @DisplayName("스터디 만들기")
+    void create_new_study() throws Exception {
         //given
         Study study = new Study();
         //when
@@ -23,8 +27,7 @@ class StudyTest {
     }
 
     @Test
-    @Disabled
-    void create1() {
+    void create_new_study_again() {
         System.out.println("create1");
     }
 
