@@ -7,6 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 
@@ -52,6 +57,19 @@ class StudyTest {
             new Study(10);
             Thread.sleep(50);
         });
+    }
+
+    @DisplayName("반복 TEST")
+    @RepeatedTest(value = 10, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
+    void repeatTest(RepetitionInfo info) {
+        System.out.println("test" + info.getCurrentRepetition() + "/" + info.getTotalRepetitions());
+    }
+
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    @DisplayName("파라미터 TEST")
+    void parameterTest(String message) {
+        System.out.println(message);
     }
 
     @BeforeAll
