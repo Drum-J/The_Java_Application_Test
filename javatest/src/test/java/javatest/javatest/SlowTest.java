@@ -1,4 +1,4 @@
-package study.javatest;
+package javatest.javatest;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

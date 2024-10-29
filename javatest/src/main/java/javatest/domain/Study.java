@@ -1,11 +1,29 @@
-package study.javatest;
+package javatest.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter @Setter @NoArgsConstructor
 public class Study {
+
+    @Id @GeneratedValue
+    private Long id;
+
     private StudyStatus status = StudyStatus.DRAFT;
 
     private int limit;
 
     private String name;
+
+    private LocalDateTime openedDateTime;
+    private Long ownerId;
 
     public Study(int limit, String name) {
         this.limit = limit;
@@ -19,16 +37,9 @@ public class Study {
         this.limit = limit;
     }
 
-    public StudyStatus getStatus() {
-        return this.status;
-    }
-
-    public int getLimit() {
-        return this.limit;
-    }
-
-    public String getName() {
-        return this.name;
+    public void open() {
+        this.openedDateTime = LocalDateTime.now();
+        this.status = StudyStatus.OPENED;
     }
 
     @Override
