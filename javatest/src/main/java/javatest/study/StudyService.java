@@ -20,7 +20,7 @@ public class StudyService {
     public Study createNewStudy(Long memberId, Study study) {
         Member member = memberService.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member doesn't exist for id: '" + memberId + "'"));
-        study.setOwnerId(memberId);
+        study.setOwnerId(member.getId());
 
         Study newStudy = studyRepository.save(study);
 
