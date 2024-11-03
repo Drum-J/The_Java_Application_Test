@@ -6,8 +6,7 @@ import javatest.domain.StudyStatus;
 import javatest.member.MemberService;
 import javatest.study.StudyRepository;
 import javatest.study.StudyService;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -30,10 +35,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+@Slf4j
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @Testcontainers
+@ContextConfiguration(initializers = TestContainersTest.ContainerPropertyInitializer.class)
 public class TestContainersTest {
 
     @Mock
@@ -41,12 +48,19 @@ public class TestContainersTest {
 
     @Autowired StudyRepository studyRepository;
 
+    //@Autowired Environment environment;
+    @Value("${container.port}") int port;
+
     @Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer()
             .withDatabaseName("studytest");
 
     @BeforeEach
     void beforeEach() {
+        log.info("===== beforeEach() 메소드 실행 =====");
+        //log.info(environment.getProperty("container.port"));
+        log.info("port number = {}", port);
+
         studyRepository.deleteAll();
     }
 
@@ -86,5 +100,14 @@ public class TestContainersTest {
         assertEquals(StudyStatus.OPENED, study.getStatus());
         assertNotNull(study.getOpenedDateTime());
         then(memberService).should().notify(study);
+    }
+
+    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            TestPropertyValues.of("container.port=" + postgreSQLContainer.getMappedPort(5432))
+                    .applyTo(applicationContext.getEnvironment());
+        }
     }
 }
