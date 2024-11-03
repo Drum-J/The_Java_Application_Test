@@ -24,7 +24,7 @@ public class StudyService {
 
         Study newStudy = studyRepository.save(study);
         memberService.notify(newStudy);
-        memberService.notify(member);
+        //memberService.notify(member);
         return newStudy;
     }
 

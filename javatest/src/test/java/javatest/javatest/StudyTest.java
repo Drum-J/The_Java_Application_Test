@@ -58,7 +58,7 @@ class StudyTest {
                 () -> assertNotNull(study),
                 () -> assertEquals(StudyStatus.DRAFT, study.getStatus(),
                         () -> "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다."),
-                () -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야한다.")
+                () -> assertTrue(study.getLimitCount() > 0, "스터디 최대 참석 가능 인원은 0보다 커야한다.")
         );
         System.out.println("create");
     }
@@ -98,7 +98,7 @@ class StudyTest {
     @ValueSource(ints = {10, 20, 30, 40})
     @DisplayName("파라미터 TEST")
     void parameterTest(@ConvertWith(StudyConverter.class) Study study) {
-        System.out.println(study.getLimit());
+        System.out.println(study.getLimitCount());
     }
 
     @Order(6)

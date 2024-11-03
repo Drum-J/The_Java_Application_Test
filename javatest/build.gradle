@@ -21,8 +21,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 도커 테스트를 위한 TestContainers 추가
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.3'
+    // postgreSQL 모듈 추가
+    testImplementation 'org.testcontainers:postgresql:1.20.3'
+    // postgreSQL 추가
+    implementation 'org.postgresql:postgresql:42.7.4'
 }
 
 tasks.named('test') {
