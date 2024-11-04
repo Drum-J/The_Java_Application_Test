@@ -38,6 +38,9 @@ dependencies {
 
     // Spring actuator 추가
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.5'
+
+    //ArchUnit 추가
+    testImplementation 'com.tngtech.archunit:archunit-junit5-engine:1.3.0'
 }
 
 tasks.named('test') {
